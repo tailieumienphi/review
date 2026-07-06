@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Đánh Giá Số - Review sản phẩm công nghệ chuyên sâu</title>
+  <meta name="description" content="Review sản phẩm công nghệ chân thực, chuyên sâu. So sánh, đánh giá và tìm sản phẩm phù hợp nhất cho bạn.">
+  <meta name="keywords" content="review sản phẩm, công nghệ, affiliate, đánh giá">
+  
+  <!-- Open Graph -->
+  <meta property="og:title" content="Đánh Giá Số - Review công nghệ chuyên sâu">
+  <meta property="og:description" content="Review sản phẩm công nghệ chân thực, chuyên sâu. Tìm sản phẩm phù hợp nhất cho bạn.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://hqai.github.io/review">
+  <meta property="og:image" content="https://images.pexels.com/photos/2047905/pexels-photo-2047905.jpeg?auto=compress&cs=tinysrgb&w=1200">
+  
+  <!-- Font & Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+  <!-- Navigation -->
+  <nav class="navbar">
+    <div class="container">
+      <a href="/" class="logo">
+        <span class="logo-icon">♦</span>
+        <span class="logo-text">Đánh Giá Số</span>
+      </a>
+      <button class="menu-toggle" id="menuToggle" aria-label="Menu">
+        <i class="fas fa-bars"></i>
+      </button>
+      <div class="nav-links" id="navLinks">
+        <a href="/" class="active">Trang Chủ</a>
+        <a href="#" data-category="all">Tất Cả</a>
+        <a href="#" data-category="laptop">Laptop</a>
+        <a href="#" data-category="headphone">Tai Nghe</a>
+        <a href="#" data-category="monitor">Màn Hình</a>
+        <a href="#" data-category="keyboard">Bàn Phím</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="container">
+      <div class="hero-content">
+        <h1>Đánh giá <span class="highlight">chân thực</span><br>trước khi mua</h1>
+        <p>Review chuyên sâu, so sánh chi tiết, giúp bạn chọn đúng sản phẩm — không quảng cáo, chỉ sự thật.</p>
+        <div class="hero-stats">
+          <div class="stat">
+            <span class="stat-number" data-count="47">0</span>
+            <span class="stat-label">Sản phẩm đã review</span>
+          </div>
+          <div class="stat">
+            <span class="stat-number" data-count="3">0</span>
+            <span class="stat-label">Năm kinh nghiệm</span>
+          </div>
+          <div class="stat">
+            <span class="stat-number" data-count="100">0</span>
+            <span class="stat-label">% Minh bạch</span>
+          </div>
+        </div>
+      </div>
+      <div class="hero-image">
+        <img src="https://images.pexels.com/photos/2047905/pexels-photo-2047905.jpeg?auto=compress&cs=tinysrgb&w=800" alt="Công nghệ" loading="lazy">
+      </div>
+    </div>
+  </section>
+
+  <!-- Search & Filter -->
+  <section class="filter-section">
+    <div class="container">
+      <div class="search-box">
+        <i class="fas fa-search"></i>
+        <input type="text" id="searchInput" placeholder="Tìm sản phẩm... (ví dụ: laptop, tai nghe, bàn phím)">
+      </div>
+      <div class="filter-tags" id="filterTags">
+        <button class="filter-btn active" data-category="all">🔥 Tất Cả</button>
+        <button class="filter-btn" data-category="laptop">💻 Laptop</button>
+        <button class="filter-btn" data-category="headphone">🎧 Tai Nghe</button>
+        <button class="filter-btn" data-category="monitor">🖥️ Màn Hình</button>
+        <button class="filter-btn" data-category="keyboard">⌨️ Bàn Phím</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Products Grid -->
+  <section class="products-section">
+    <div class="container">
+      <div class="section-header">
+        <h2>Sản Phẩm Mới Nhất <span class="count-badge" id="productCount">0</span></h2>
+        <div class="sort-controls">
+          <select id="sortSelect">
+            <option value="newest">Mới nhất</option>
+            <option value="rating">Đánh giá cao nhất</option>
+            <option value="price-asc">Giá: Thấp → Cao</option>
+            <option value="price-desc">Giá: Cao → Thấp</option>
+          </select>
+        </div>
+      </div>
+      <div class="products-grid" id="productsGrid">
+        <!-- JS sẽ render từ products.json -->
+      </div>
+      <div class="loading" id="loadingSpinner">
+        <i class="fas fa-spinner fa-spin"></i> Đang tải...
+      </div>
+    </div>
+  </section>
+
+  <!-- Newsletter -->
+  <section class="newsletter">
+    <div class="container">
+      <h2>Nhận review mới nhất 📬</h2>
+      <p>Đăng ký để không bỏ lỡ bài review sản phẩm mới. Miễn phí, hủy bất cứ lúc nào.</p>
+      <form class="newsletter-form" id="newsletterForm">
+        <input type="email" placeholder="Email của bạn..." required>
+        <button type="submit">Đăng Ký</button>
+      </form>
+      <p class="newsletter-note">✉️ Không spam. Hủy bất kỳ lúc nào.</p>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-col">
+          <h4>♦ Đánh Giá Số</h4>
+          <p>Review sản phẩm công nghệ chân thực, độc lập. Một số link là affiliate — bạn không trả thêm phí.</p>
+          <p class="disclosure"><strong>Công khai:</strong> Chúng tôi nhận hoa hồng từ các giao dịch qua link affiliate, nhưng điều này không ảnh hưởng đến đánh giá.</p>
+        </div>
+        <div class="footer-col">
+          <h4>Danh Mục</h4>
+          <a href="#" data-category="laptop">Laptop</a>
+          <a href="#" data-category="headphone">Tai Nghe</a>
+          <a href="#" data-category="monitor">Màn Hình</a>
+          <a href="#" data-category="keyboard">Bàn Phím</a>
+        </div>
+        <div class="footer-col">
+          <h4>Liên Kết</h4>
+          <a href="#">Về Chúng Tôi</a>
+          <a href="#">Chính Sách</a>
+          <a href="#">Liên Hệ</a>
+          <a href="#">Điều Khoản Sử Dụng</a>
+        </div>
+        <div class="footer-col">
+          <h4>Theo Dõi</h4>
+          <div class="social-links">
+            <a href="#" aria-label="Facebook"><i class="fab fa-facebook"></i></a>
+            <a href="#" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+            <a href="#" aria-label="TikTok"><i class="fab fa-tiktok"></i></a>
+            <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2026 <a href="https://hqai.github.io/review">Đánh Giá Số</a>. Made with ♠️ by Ace.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="assets/js/products.js"></script>
+  <script src="assets/js/main.js"></script>
+</body>
+</html>
