@@ -1,18 +1,18 @@
 // ============================================
-// Main App — Đánh Giá Số
+// Main App — Tri Thức Mở • Kho tài liệu học tập
 // ============================================
 
 document.addEventListener('DOMContentLoaded', () => {
   'use strict';
 
   const state = {
-    products: [...PRODUCTS],
-    filtered: [...PRODUCTS],
+    resources: [...RESOURCES],
+    filtered: [...RESOURCES],
     currentFilter: 'all',
     searchQuery: '',
     sortBy: 'newest',
     visibleCount: 0,
-    initialLoad: 9,
+    initialLoad: 12,
     loadMore: 6
   };
 
@@ -20,22 +20,31 @@ document.addEventListener('DOMContentLoaded', () => {
   const $$ = (sel) => document.querySelectorAll(sel);
 
   // ---- Render ----
-  function renderProducts() {
-    const grid = $('#productsGrid');
-    const count = $('#productCount');
+  function renderResources() {
+    const grid = $('#resourcesGrid');
+    const count = $('#resourceCount');
     
     let list = [...state.filtered];
     
     // Sort
-    if (state.sortBy === 'rating') list.sort((a, b) => b.rating - a.rating);
-    else if (state.sortBy === 'price-asc') list.sort((a, b) => a.price - b.price);
-    else if (state.sortBy === 'price-desc') list.sort((a, b) => b.price - a.price);
+    if (state.sortBy === 'popular') list.sort((a, b) => {
+      const badgeOrder = { popular: 3, trending: 2, new: 1, free: 0 };
+      return (badgeOrder[b.badge] || 0) - (badgeOrder[a.badge] || 0);
+    });
+    else if (state.sortBy === 'difficulty-asc') list.sort((a, b) => {
+      const diffOrder = { 'Cơ bản': 0, 'Cơ bản → Trung cấp': 1, 'Cơ bản → Nâng cao': 2, 'Trung cấp': 3, 'Trung cấp → Nâng cao': 4, 'Nâng cao': 5, 'Tất cả': 0 };
+      return (diffOrder[a.difficulty] || 0) - (diffOrder[b.difficulty] || 0);
+    });
+    else if (state.sortBy === 'difficulty-desc') list.sort((a, b) => {
+      const diffOrder = { 'Cơ bản': 0, 'Cơ bản → Trung cấp': 1, 'Cơ bản → Nâng cao': 2, 'Trung cấp': 3, 'Trung cấp → Nâng cao': 4, 'Nâng cao': 5, 'Tất cả': 0 };
+      return (diffOrder[b.difficulty] || 0) - (diffOrder[a.difficulty] || 0);
+    });
     // "newest" = keep original order
     
     if (list.length === 0) {
       grid.innerHTML = `<div class="empty-state">
-        <i class="fas fa-search"></i>
-        <h3>Không tìm thấy sản phẩm</h3>
+        <i class="fas fa-book-open"></i>
+        <h3>Không tìm thấy tài liệu</h3>
         <p>Thử với từ khóa hoặc danh mục khác nhé!</p>
       </div>`;
       count.textContent = '0';
@@ -44,39 +53,37 @@ document.addEventListener('DOMContentLoaded', () => {
     
     count.textContent = list.length;
     
-    grid.innerHTML = list.map((product, index) => `
-      <div class="product-card" data-index="${index}" style="animation: fadeInUp 0.4s ease ${index * 0.05}s both;">
-        <div class="product-image">
-          <img src="${product.image}" alt="${product.name}" loading="lazy" onerror="this.src='https://images.pexels.com/photos/2047905/pexels-photo-2047905.jpeg?auto=compress&cs=tinysrgb&w=600'">
-          ${product.badge ? `<span class="product-badge ${product.badge}">${
-            product.badge === 'best' ? '★ Best Choice' : 
-            product.badge === 'hot' ? '🔥 Hot' : '✨ Mới'
+    grid.innerHTML = list.map((r, index) => `
+      <div class="resource-card" data-index="${index}" style="animation: fadeInUp 0.4s ease ${index * 0.04}s both;">
+        <div class="resource-image">
+          <img src="${r.image}" alt="${r.name}" loading="lazy" onerror="this.src='https://images.pexels.com/photos/2047905/pexels-photo-2047905.jpeg?auto=compress&cs=tinysrgb&w=600'">
+          ${r.badge ? `<span class="resource-badge ${r.badge}">${
+            r.badge === 'popular' ? '★ Phổ biến' : 
+            r.badge === 'trending' ? '📈 Xu hướng' : 
+            r.badge === 'new' ? '✨ Mới' : '✅ Miễn phí'
           }</span>` : ''}
-          <span class="product-category">${getCategoryIcon(product.category)} ${getCategoryLabel(product.category)}</span>
+          <span class="resource-category-tag">${getCategoryIcon(r.category)} ${getCategoryLabel(r.category)}</span>
         </div>
-        <div class="product-body">
-          <h3 class="product-name">${product.name}</h3>
-          <p class="product-desc">${product.description}</p>
-          <div class="product-meta">
-            <div class="product-rating">
-              <span class="stars">${renderStars(product.rating)}</span>
-              <span class="rating-value">${product.rating}</span>
-              <span class="rating-count">(${product.reviewCount})</span>
-            </div>
-            <div class="product-price">
-              ${formatPrice(product.price)}
-              ${product.oldPrice ? `<span class="old-price">${formatPrice(product.oldPrice)}</span>` : ''}
-            </div>
+        <div class="resource-body">
+          <h3 class="resource-name">${r.name}</h3>
+          <p class="resource-desc">${r.description}</p>
+          <div class="resource-meta">
+            <span class="resource-type">
+              <i class="fas fa-file-alt"></i> ${r.formatLabel}
+            </span>
+            <span class="resource-type">
+              <i class="fas fa-globe"></i> ${r.language}
+            </span>
           </div>
-          <div class="product-tags">
-            ${product.tags.map(tag => `<span class="product-tag">${tag}</span>`).join('')}
+          <div class="resource-tags">
+            ${r.tags.slice(0, 4).map(tag => `<span class="resource-tag">${tag}</span>`).join('')}
           </div>
-          <div class="product-actions">
-            <button class="btn-detail" onclick="showDetail('${product.id}')">
+          <div class="resource-actions">
+            <button class="btn-detail" onclick="showDetail('${r.id}')">
               <i class="fas fa-info-circle"></i> Chi Tiết
             </button>
-            <a href="${product.affiliateUrl}" class="btn-affiliate" target="_blank" rel="nofollow sponsored">
-              Xem Giá <i class="fas fa-external-link-alt"></i>
+            <a href="${r.sourceUrl}" class="btn-download" target="_blank" rel="noopener">
+              <i class="fas fa-external-link-alt"></i> Truy Cập
             </a>
           </div>
         </div>
@@ -85,12 +92,12 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function getCategoryIcon(cat) {
-    const icons = { laptop: '💻', headphone: '🎧', monitor: '🖥️', keyboard: '⌨️' };
-    return icons[cat] || '📦';
+    const icons = { ai: '🧠', bot: '🤖', agent: '⚡', openclaw: '♠️' };
+    return icons[cat] || '📚';
   }
 
   function getCategoryLabel(cat) {
-    const labels = { laptop: 'Laptop', headphone: 'Tai Nghe', monitor: 'Màn Hình', keyboard: 'Bàn Phím' };
+    const labels = { ai: 'AI', bot: 'Bot', agent: 'AI Agent', openclaw: 'OpenClaw' };
     return labels[cat] || cat;
   }
 
@@ -106,25 +113,26 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // ---- Filters & Search ----
-  function filterProducts() {
-    let filtered = [...state.products];
+  function filterResources() {
+    let filtered = [...state.resources];
     
     if (state.currentFilter !== 'all') {
-      filtered = filtered.filter(p => p.category === state.currentFilter);
+      filtered = filtered.filter(r => r.category === state.currentFilter);
     }
     
     if (state.searchQuery.trim()) {
       const q = state.searchQuery.toLowerCase().trim();
-      filtered = filtered.filter(p =>
-        p.name.toLowerCase().includes(q) ||
-        p.description.toLowerCase().includes(q) ||
-        p.tags.some(t => t.toLowerCase().includes(q)) ||
-        p.category.includes(q)
+      filtered = filtered.filter(r =>
+        r.name.toLowerCase().includes(q) ||
+        r.description.toLowerCase().includes(q) ||
+        r.tags.some(t => t.toLowerCase().includes(q)) ||
+        r.category.includes(q) ||
+        r.format.toLowerCase().includes(q)
       );
     }
     
     state.filtered = filtered;
-    renderProducts();
+    renderResources();
   }
 
   // ---- Event Listeners ----
@@ -135,7 +143,7 @@ document.addEventListener('DOMContentLoaded', () => {
       $$('.filter-btn').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
       state.currentFilter = btn.dataset.category;
-      filterProducts();
+      filterResources();
       updateNavActive(btn.dataset.category);
     });
   });
@@ -149,7 +157,7 @@ document.addEventListener('DOMContentLoaded', () => {
       $$('.filter-btn').forEach(b => {
         b.classList.toggle('active', b.dataset.category === cat);
       });
-      filterProducts();
+      filterResources();
       // Close mobile menu
       $('#navLinks').classList.remove('active');
     });
@@ -167,14 +175,14 @@ document.addEventListener('DOMContentLoaded', () => {
     clearTimeout(searchTimeout);
     searchTimeout = setTimeout(() => {
       state.searchQuery = e.target.value;
-      filterProducts();
+      filterResources();
     }, 300);
   });
 
   // Sort
   $('#sortSelect').addEventListener('change', (e) => {
     state.sortBy = e.target.value;
-    renderProducts();
+    renderResources();
   });
 
   // Mobile menu toggle
@@ -246,10 +254,10 @@ document.addEventListener('DOMContentLoaded', () => {
   }
   window.showToast = showToast;
 
-  // Product detail modal (simple version)
-  window.showDetail = function(productId) {
-    const product = PRODUCTS.find(p => p.id === productId);
-    if (!product) return;
+  // Resource detail modal
+  window.showDetail = function(resourceId) {
+    const resource = RESOURCES.find(r => r.id === resourceId);
+    if (!resource) return;
     
     const modal = document.createElement('div');
     modal.className = 'modal-overlay';
@@ -258,32 +266,46 @@ document.addEventListener('DOMContentLoaded', () => {
         <button class="modal-close">&times;</button>
         <div class="modal-grid">
           <div class="modal-image">
-            <img src="${product.image}" alt="${product.name}">
+            <img src="${resource.image}" alt="${resource.name}">
           </div>
           <div class="modal-content">
-            <span class="product-category-tag">${getCategoryIcon(product.category)} ${getCategoryLabel(product.category)}</span>
-            <h2>${product.name}</h2>
-            <div class="modal-rating">${renderStars(product.rating)} <span>${product.rating} (${product.reviewCount} đánh giá)</span></div>
-            <div class="modal-price">${formatPrice(product.price)}</div>
-            <p>${product.description}</p>
+            <span class="resource-category-tag">${getCategoryIcon(resource.category)} ${getCategoryLabel(resource.category)}</span>
+            <h2>${resource.name}</h2>
             
-            <div class="modal-pros-cons">
-              <div>
-                <h4><i class="fas fa-plus-circle" style="color:var(--success)"></i> Ưu điểm</h4>
-                <ul>${product.pros.map(p => `<li>${p}</li>`).join('')}</ul>
+            <div class="modal-meta">
+              <div class="modal-meta-item">
+                <i class="fas fa-file-alt"></i>
+                <span>${resource.formatLabel}</span>
               </div>
-              <div>
-                <h4><i class="fas fa-minus-circle" style="color:var(--error)"></i> Nhược điểm</h4>
-                <ul>${product.cons.map(c => `<li>${c}</li>`).join('')}</ul>
+              <div class="modal-meta-item">
+                <i class="fas fa-globe"></i>
+                <span>${resource.language}</span>
               </div>
+              <div class="modal-meta-item">
+                <i class="fas fa-signal"></i>
+                <span>${resource.difficulty}</span>
+              </div>
+              ${resource.fileSize !== 'Online' ? `
+              <div class="modal-meta-item">
+                <i class="fas fa-database"></i>
+                <span>${resource.fileSize}</span>
+              </div>` : ''}
             </div>
             
-            <div class="modal-tags">${product.tags.map(t => `<span>${t}</span>`).join('')}</div>
+            <p>${resource.description}</p>
             
-            <a href="${product.affiliateUrl}" class="btn-affiliate modal-btn" target="_blank" rel="nofollow sponsored">
-              🛒 Xem Giá Tốt Nhất <i class="fas fa-external-link-alt"></i>
-            </a>
-            <p class="affiliate-disclosure">Khi bạn mua qua link này, chúng tôi có thể nhận hoa hồng nhỏ. Bạn không mất thêm phí.</p>
+            <div class="modal-tags">${resource.tags.map(t => `<span>${t}</span>`).join('')}</div>
+            
+            <div class="modal-actions">
+              <a href="${resource.sourceUrl}" class="btn-download modal-btn" target="_blank" rel="noopener">
+                <i class="fas fa-external-link-alt"></i> Truy Cập Tài Nguyên
+              </a>
+            </div>
+            
+            <div class="affiliate-disclosure">
+              <i class="fas fa-heart" style="color: var(--error);"></i> 
+              Tài liệu hoàn toàn miễn phí. Nếu bạn muốn ủng hộ, hãy chia sẻ cho bạn bè!
+            </div>
           </div>
         </div>
       </div>
@@ -383,10 +405,10 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     
     .modal-content {
-      padding: 32px;
+      padding: 28px;
     }
     
-    .product-category-tag {
+    .resource-category-tag {
       display: inline-block;
       padding: 4px 12px;
       border-radius: 50px;
@@ -396,50 +418,38 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     
     .modal-content h2 {
-      font-size: 1.4rem;
-      margin-bottom: 8px;
+      font-size: 1.3rem;
+      margin-bottom: 12px;
+      line-height: 1.3;
     }
     
-    .modal-rating {
+    .modal-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+    
+    .modal-meta-item {
       display: flex;
       align-items: center;
-      gap: 8px;
-      margin-bottom: 12px;
-      font-size: 0.9rem;
+      gap: 6px;
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+      padding: 4px 10px;
+      background: var(--border-light);
+      border-radius: 6px;
     }
-    .modal-rating .stars { color: var(--accent); font-size: 1rem; }
     
-    .modal-price {
-      font-size: 1.6rem;
-      font-weight: 800;
+    .modal-meta-item i {
       color: var(--primary);
-      margin-bottom: 16px;
+      font-size: 0.75rem;
     }
     
     .modal-content p {
       font-size: 0.88rem;
-      margin-bottom: 20px;
-    }
-    
-    .modal-pros-cons {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 16px;
-      margin-bottom: 20px;
-    }
-    .modal-pros-cons h4 {
-      font-size: 0.85rem;
-      margin-bottom: 8px;
-    }
-    .modal-pros-cons ul li {
-      font-size: 0.82rem;
-      padding: 4px 0;
-      color: var(--text-secondary);
-      list-style: none;
-    }
-    .modal-pros-cons ul li::before {
-      content: '•';
-      margin-right: 6px;
+      margin-bottom: 16px;
+      line-height: 1.6;
     }
     
     .modal-tags {
@@ -453,6 +463,7 @@ document.addEventListener('DOMContentLoaded', () => {
       border-radius: 50px;
       background: var(--border-light);
       font-size: 0.78rem;
+      color: var(--text-secondary);
     }
     
     .modal-btn {
@@ -467,8 +478,14 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     
     .affiliate-disclosure {
-      font-size: 0.72rem !important;
+      font-size: 0.78rem !important;
       color: var(--text-light) !important;
+      margin-top: 8px !important;
+    }
+    
+    .modal-actions {
+      display: flex;
+      gap: 10px;
     }
     
     @media (max-width: 700px) {
@@ -477,15 +494,15 @@ document.addEventListener('DOMContentLoaded', () => {
       }
       .modal-image {
         border-radius: 20px 20px 0 0;
-        min-height: 220px;
+        min-height: 200px;
       }
       .modal { max-width: 100%; }
-      .modal-pros-cons { grid-template-columns: 1fr; }
+      .modal-actions { flex-direction: column; }
     }
   `;
   document.head.appendChild(modalStyles);
 
   // ---- Init ----
-  renderProducts();
+  renderResources();
   $('#loadingSpinner').style.display = 'none';
 });

@@ -1,62 +1,50 @@
-# Cấu trúc trang Review Sản Phẩm
-# =============================
+# Tri Thức Mở ♠️ — Kho tài liệu học tập miễn phí
+
+**Kho tài liệu học tập miễn phí, nguồn mở về AI, Bot, AI Agent, OpenClaw và công nghệ.**
 
 ## Tổng quan
-- **Tên:** Đánh Giá Số — Review sản phẩm công nghệ chuyên sâu
-- **Mục đích:** Affiliate marketing (kiếm hoa hồng qua link shopee/tiki/shopify)
+- **Tên:** Tri Thức Mở
+- **Mục đích:** Sưu tầm và chia sẻ tài liệu học tập chất lượng từ các nguồn mở, không vi phạm bản quyền
 - **Stack:** HTML thuần + CSS + JS (không framework, tối ưu tốc độ)
-- **Host dự kiến:** GitHub Pages (miễn phí)
+- **Host:** GitHub Pages (miễn phí)
 
 ## Cấu trúc thư mục
 ```
 review-site/
-├── index.html              # Trang chủ
+├── index.html              # Trang chủ — Kho tài liệu
 ├── assets/
 │   ├── css/
-│   │   └── style.css       # Stylesheet (tối ưu CRO)
+│   │   └── style.css       # Stylesheet
 │   ├── js/
-│   │   ├── products.js     # Database sản phẩm
+│   │   ├── resources.js    # Database tài liệu
 │   │   └── main.js         # Logic: filter, search, sort, modal
 │   └── img/                # Ảnh local (nếu có)
-└── pages/                  # Trang con cho từng sản phẩm
 ```
 
-## Tính năng
-1. **Filter theo danh mục** — Laptop, Tai Nghe, Màn Hình, Bàn Phím
-2. **Tìm kiếm real-time** — Search theo tên, tags, mô tả
-3. **Sắp xếp** — Mới nhất, đánh giá, giá
-4. **Product Card** — Badge (Best/Hot/New), rating, tags
-5. **Modal chi tiết** — Ưu/nhược điểm, các tags, button affiliate
-6. **Responsive** — Mobile-first
-7. **Newsletter** — Form đăng ký email
-8. **Sticky filter bar** — Tiện lợi khi scroll
+## Danh mục tài liệu
+1. **🧠 AI** — Machine Learning, Deep Learning, NLP, Prompt Engineering
+2. **🤖 Bot** — Telegram Bot, Discord Bot, WhatsApp API, Chatbot Platform
+3. **⚡ AI Agent** — LangChain, AutoGen, CrewAI, smolagents, Anthropic Agents
+4. **♠️ OpenClaw** — Docs, Gateway, Skills, Talk Mode, Workspace
+
+## Nguyên tắc
+- ✅ **Miễn phí 100%** — không bán tài liệu, không khóa nội dung
+- ✅ **Nguồn mở / CC-licensed** — tôn trọng giấy phép gốc
+- ✅ **Được phép chia sẻ** — khuyến khích share cho bạn bè
+- ✅ **Không vi phạm bản quyền** — chỉ link đến nguồn chính thức hoặc repo mở
 
 ## Nguồn ảnh
-- Từ Pexels API (key `S8PgN…`) — ảnh stock miễn phí bản quyền
+- Từ Pexels API (free stock photos, miễn phí bản quyền)
 - Fallback ảnh mặc định nếu ảnh lỗi
 
-## Kế hoạch deploy
-1. Tạo GitHub repo `review` → GitHub Pages
-2. Hoặc host qua n8n static server
-3. Thêm tracking (GA4)
-4. Tích hợp n8n workflow để cập nhật sản phẩm tự động
+## Nguồn gốc
+Trang này được chuyển đổi từ dự án **Đánh Giá Số** (review sản phẩm affiliate) thành **Tri Thức Mở** — dự án chia sẻ giá trị cộng đồng. Affiliate vẫn có mặt nhưng gián tiếp và kín đáo qua các đề xuất công cụ/tài nguyên.
 
-## Danh sách sản phẩm mẫu (9 sản phẩm)
-1. MacBook Air M3 13" - Laptop
-2. ASUS ROG Zephyrus G14 - Laptop  
-3. Logitech G Pro X Superlight 2 - Chuột
-4. Keychron Q1 Pro - Bàn Phím
-5. Sony WH-1000XM5 - Tai Nghe
-6. AirPods Pro 2 - Tai Nghe
-7. Razer BlackShark V2 Pro 2023 - Tai Nghe
-8. LG 27" 4K Nano IPS - Màn Hình
-9. DJI Osmo Pocket 3 - Camera
-
-## Cần làm tiếp
-- [ ] Tạo GitHub token (PAT) — cần quyền `repo` + `workflow`
-- [ ] Push code lên repo
-- [ ] Bật GitHub Pages
-- [ ] Thêm Google Analytics
-- [ ] Thêm link affiliate thật (Shopee, Tiki, Amazon)
-- [ ] Tạo workflow n8n tự động đăng bài mới
-- [ ] SEO: sitemap.xml, robots.txt, meta tags
+## Deploy
+```bash
+# Push lên GitHub Pages
+cd /Users/hqai/review-site
+git add -A
+git commit -m "Chuyển đổi: Review site → Tri Thức Mở - kho tài liệu miễn phí"
+git push origin main
+```
